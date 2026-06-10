@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+**/.env
+**/.env.local
+**/.env.production
+
+# Next.js
+**/.next/
+**/out/
+
+# Prisma
+**/generated/
+
+# Uploads
+**/public/uploads/*
+!**/public/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

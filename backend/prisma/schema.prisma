@@ -1,0 +1,148 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model HeroContent {
+  id          String   @id @default(cuid())
+  headline    String
+  subtitle    String   @db.Text
+  cta1Label   String
+  cta1Url     String
+  cta2Label   String
+  cta2Url     String
+  trustPills  String[]
+  tickerItems String[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  category    String
+  imageUrl    String
+  tags        String[]
+  items       String[]
+  steps       String[]
+  ctaLabel    String
+  order       Int
+}
+
+model Project {
+  id              String  @id @default(cuid())
+  name            String
+  category        String
+  tags            String[]
+  description     String  @db.Text
+  imageUrl        String
+  featured        Boolean @default(false)
+  homepageTeaser  Boolean @default(false)
+  order           Int
+}
+
+model CaseStudy {
+  id          String @id @default(cuid())
+  title       String
+  description String @db.Text
+  results     String @db.Text
+  imageUrl    String
+}
+
+model Testimonial {
+  id        String @id @default(cuid())
+  quote     String @db.Text
+  name      String
+  role      String
+  avatarUrl String
+  order     Int
+}
+
+model Faq {
+  id       String @id @default(cuid())
+  question String
+  answer   String @db.Text
+  page     String
+  order    Int
+}
+
+model TeamMember {
+  id       String @id @default(cuid())
+  name     String
+  role     String
+  imageUrl String
+  order    Int
+}
+
+model Stat {
+  id    String @id @default(cuid())
+  value String
+  label String
+  order Int
+}
+
+model TechTool {
+  id      String @id @default(cuid())
+  name    String
+  logoUrl String
+  order   Int
+}
+
+model AboutContent {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.Text
+}
+
+model Value {
+  id    String @id @default(cuid())
+  icon  String
+  label String
+  order Int
+}
+
+model SiteSettings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.Text
+}
+
+model FooterLink {
+  id     String @id @default(cuid())
+  column String
+  label  String
+  url    String
+  order  Int
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  service   String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+}
+
+model EnquirySubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+}
