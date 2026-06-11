@@ -17,6 +17,9 @@ export default async function PortfolioPage() {
   ]);
 
   return (
-    <PortfolioPageContent projects={projects} caseStudy={caseStudies[0] ?? null} />
+    <PortfolioPageContent
+      projects={projects ?? []}
+      caseStudy={caseStudies?.[0] ?? null}
+    />
   );
 }

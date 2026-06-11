@@ -1,4 +1,5 @@
 import { HomePageContent } from "@/components/public/HomePageContent";
+import { PageError } from "@/components/public/PageError";
 import { apiGet } from "@/lib/api";
 import type {
   Faq,
@@ -21,15 +22,21 @@ export default async function HomePage() {
     apiGet<TechTool[]>("/api/tech-tools"),
   ]);
 
+  if (!hero) {
+    return (
+      <PageError message="Unable to load content. Please try again later." />
+    );
+  }
+
   return (
     <HomePageContent
       hero={hero}
-      services={services}
-      stats={stats}
-      projects={projects}
-      testimonials={testimonials}
-      faqs={faqs}
-      techTools={techTools}
+      services={services ?? []}
+      stats={stats ?? []}
+      projects={projects ?? []}
+      testimonials={testimonials ?? []}
+      faqs={faqs ?? []}
+      techTools={techTools ?? []}
     />
   );
 }

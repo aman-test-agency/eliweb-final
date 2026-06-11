@@ -16,5 +16,5 @@ export default async function ContactPage() {
     apiGet<Faq[]>("/api/faqs?page=contact"),
   ]);
 
-  return <ContactPageContent settings={settings} faqs={faqs} />;
+  return <ContactPageContent settings={settings ?? {}} faqs={faqs ?? []} />;
 }

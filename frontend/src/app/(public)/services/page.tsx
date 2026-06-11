@@ -16,5 +16,5 @@ export const metadata: Metadata = {
 
 export default async function ServicesPage() {
   const services = await apiGet<Service[]>("/api/services");
-  return <ServicesPageContent services={services} />;
+  return <ServicesPageContent services={services ?? []} />;
 }

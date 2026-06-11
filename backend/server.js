@@ -29,6 +29,10 @@ app.prepare().then(() => {
     }),
   );
 
+  server.get("/health", (_req, res) => {
+    res.json({ status: "ok" });
+  });
+
   server.all("*", (req, res) => handle(req, res));
 
   server.listen(port, (err) => {

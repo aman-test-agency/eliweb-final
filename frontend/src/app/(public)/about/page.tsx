@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AboutPageContent } from "@/components/public/AboutPageContent";
+import { PageError } from "@/components/public/PageError";
 import { apiGet } from "@/lib/api";
 import type { AboutContent, TeamMember, Value } from "@/lib/types";
 
@@ -21,5 +22,13 @@ export default async function AboutPage() {
     apiGet<Value[]>("/api/values"),
   ]);
 
-  return <AboutPageContent about={about} team={team} values={values} />;
+  if (!about) {
+    return (
+      <PageError message="Unable to load content. Please try again later." />
+    );
+  }
+
+  return (
+    <AboutPageContent about={about} team={team ?? []} values={values ?? []} />
+  );
 }
