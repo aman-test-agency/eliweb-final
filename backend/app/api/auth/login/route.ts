@@ -7,8 +7,8 @@ import { signToken } from "@/lib/auth";
 import { corsPreflight, withCors } from "@/lib/cors";
 import { prisma } from "@/lib/prisma";
 
-export function OPTIONS() {
-  return corsPreflight();
+export function OPTIONS(request: NextRequest) {
+  return corsPreflight(request);
 }
 
 export async function POST(request: NextRequest) {
@@ -33,13 +33,14 @@ export async function POST(request: NextRequest) {
 
     const token = await signToken({ sub: user.id, email: user.email });
     const response = withCors(
-      NextResponse.json({ success: true }),
+      NextResponse.json({ success: true, token }),
+      request,
     );
 
     response.cookies.set("admin-token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60,
       path: "/",
     });
