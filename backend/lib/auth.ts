@@ -29,3 +29,11 @@ export async function verifyToken(
 export function getTokenFromCookies(request: NextRequest): string | null {
   return request.cookies.get("admin-token")?.value ?? null;
 }
+
+export function getTokenFromRequest(request: NextRequest): string | null {
+  const auth = request.headers.get("authorization");
+  if (auth?.startsWith("Bearer ")) {
+    return auth.slice(7);
+  }
+  return getTokenFromCookies(request);
+}
