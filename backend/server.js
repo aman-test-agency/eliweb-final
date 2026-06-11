@@ -18,19 +18,19 @@ const allowedOrigins = [
 app.prepare().then(() => {
   const server = express();
 
-  server.use(
-    cors({
-      origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-          return;
-        }
-        callback(new Error("Not allowed by CORS"));
-      },
-      credentials: true,
-    }),
-  );
-
+  // server.use(
+  //   cors({
+  //     origin(origin, callback) {
+  //       if (!origin || allowedOrigins.includes(origin)) {
+  //         callback(null, true);
+  //         return;
+  //       }
+  //       callback(new Error("Not allowed by CORS"));
+  //     },
+  //     credentials: true,
+  //   }),
+  // );
+server.use(cors());
   server.get("/health", (_req, res) => {
     res.json({ status: "ok" });
   });
