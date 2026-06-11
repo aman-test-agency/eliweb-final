@@ -9,8 +9,10 @@ const handle = app.getRequestHandler();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://eliweb-final.vercel.app/",
+  "https://www.eliweb.com",
+  "https://eliweb-final.vercel.app",  // add this line
   process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,           // add this too
 ].filter(Boolean);
 
 app.prepare().then(() => {
