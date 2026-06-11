@@ -2,9 +2,13 @@ services:
   - type: web
     name: eliweb-backend
     env: node
-    buildCommand: npm install && npm run build
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
     startCommand: node server.js
+    postDeployCommand: npx prisma db push
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: PORT
         value: 5000
       - key: DATABASE_URL
@@ -12,4 +16,4 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: CLIENT_URL
-        value: https://www.eliweb.com
+        sync: false

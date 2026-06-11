@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
+    "postinstall": "prisma generate",
     "dev": "nodemon server.js",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
