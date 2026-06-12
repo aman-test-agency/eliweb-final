@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 const allowedOrigins = [
   "http://localhost:3000",
   "https://www.eliweb.com",
+  "https://eliweb-final.vercel.app",
   process.env.CLIENT_URL,
 ].filter(Boolean) as string[];
 
