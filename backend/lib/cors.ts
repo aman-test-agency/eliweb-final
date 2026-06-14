@@ -5,6 +5,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://eliweb-final.vercel.app",
   "https://www.eliweb.in",
+    "https://eliweb.in", 
   process.env.CLIENT_URL,
 ].filter(Boolean) as string[];
 

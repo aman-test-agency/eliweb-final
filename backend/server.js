@@ -63,9 +63,10 @@ const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
 
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://www.eliweb.in",
-  "https://eliweb-final.vercel.app",
+'http://localhost:3000',
+  'https://eliweb-final.vercel.app',
+  'https://www.eliweb.in',  // ✅ add this
+  'https://eliweb.in',  
   process.env.CLIENT_URL,
   process.env.FRONTEND_URL,
 ].filter(Boolean);
