@@ -2,14 +2,15 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
-import { withCors } from "@/lib/cors";
+// import { withCors } from "@/lib/cors";
 
 export function json(
   data: unknown,
   init?: ResponseInit,
   request?: NextRequest,
 ): NextResponse {
-  return withCors(NextResponse.json(data, init), request);
+  return NextResponse.json(data, init);
+  // return withCors(NextResponse.json(data, init), request);
 }
 
 export function apiError(
