@@ -96,11 +96,11 @@ export async function GET(request: NextRequest) {
         enquiryUnread,
         recent,
       },
-      undefined,
-      request,
+    
+    
     );
   } catch (error) {
     console.error(error);
-    return json({ error: "Failed to load dashboard" }, { status: 500 }, request);
+    return json({ error: "Failed to load dashboard" }, { status: 500 });
   }
 }
