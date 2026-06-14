@@ -39,6 +39,7 @@
 
 //   return null;
 // }
+
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -47,7 +48,6 @@ import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 export function json(
   data: unknown,
   init?: ResponseInit,
-  _request?: NextRequest, // ✅ underscore prefix to mark as intentionally unused
 ): NextResponse {
   return NextResponse.json(data, init);
 }
@@ -56,7 +56,6 @@ export function apiError(
   error: unknown,
   fallback: string,
   status = 500,
-  _request?: NextRequest, // ✅ same here
 ): NextResponse {
   console.error(error);
   const message = error instanceof Error ? error.message : fallback;
