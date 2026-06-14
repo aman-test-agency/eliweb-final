@@ -76,8 +76,6 @@ npm run dev
 
 ### Default admin credentials (after seed)
 
-- Email: `admin@eliweb.in`
-- Password: `eliweb@admin2024`
 
 ## Environment variables
 
