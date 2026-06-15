@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Flame, Handshake, Linkedin, Sparkles, Target, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { CSSProperties } from "react";
-
+import { BadgeCheck, Headset, ShieldCheck } from "lucide-react";
 import { PageHero, VisualMockup } from "@/components/public/Section";
 import { Button } from "@/components/ui/button";
 import type { AboutContent, TeamMember, Value } from "@/lib/types";
@@ -63,6 +63,59 @@ export function AboutPageContent({ about, team, values }: Props) {
           </div>
         );})}
       </section>
+  <section className="section-shell py-12" aria-labelledby="trust-heading">
+  <div className="mb-8 text-center">
+    <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+      Verified &amp; Trusted
+    </p>
+    <h2 id="trust-heading" className="font-heading text-3xl font-bold">
+      Registered. Compliant. Reliable.
+    </h2>
+    <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
+      We operate as a fully registered business under the Government of India — so you can buy and sell with complete confidence.
+    </p>
+  </div>
+
+  <div className="grid gap-5 md:grid-cols-3">
+    {[
+      {
+        icon: BadgeCheck,
+        logo: "/msmelogo.png",
+        title: "MSME Registered",
+        subtitle: "Officially recognised by the Ministry of Micro, Small & Medium Enterprises, Government of India.",
+      },
+      {
+        icon: ShieldCheck,
+        logo: "/MCA.jpeg",
+        title: "MCA Registered Company",
+        subtitle: "Incorporated and compliant under the Ministry of Corporate Affairs for secure, lawful transactions.",
+      },
+      {
+        icon: Headset,
+        logo: "/stp.png",
+        title: "Dedicated Customer Support",
+        subtitle: "Our support team is available to resolve queries, assist with orders, and guide you every step of the way.",
+      },
+    ].map((item, index) => (
+      <div
+        key={item.title}
+        className="rounded-3xl border border-border bg-card p-6 text-center card-hover"
+        data-reveal="scale"
+        style={{ "--reveal-delay": `${index * 100}ms` } as CSSProperties}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.logo}
+          alt={item.title}
+          className="mx-auto mb-4 h-50 w-auto object-contain"
+          loading="lazy"
+        />
+        <h3 className="font-heading text-lg font-bold">{item.title}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{item.subtitle}</p>
+      </div>
+    ))}
+  </div>
+</section>
       <section className="section-shell py-20">
         <div className="text-center">
           <p className="eyebrow mb-4">Team</p>
