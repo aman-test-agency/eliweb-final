@@ -482,6 +482,8 @@
 //     </div>
 //   );
 // }
+
+
 "use client";
 
 import Link from "next/link";
@@ -813,9 +815,53 @@ function useRevealOnNavigate(rootRef: React.RefObject<HTMLElement | null>) {
   }, [pathname, rootRef]);
 }
 
+// export function RevealShell({ children }: { children: React.ReactNode }) {
+//   const contentRef = useRef<HTMLDivElement>(null);
+
+//   useEffect(() => {
+//     if (document.getElementById("google-translate-script")) return;
+//     (window as Window & { googleTranslateElementInit?: () => void }).googleTranslateElementInit =
+//       () => {
+//         // @ts-expect-error google global
+//         new window.google.translate.TranslateElement(
+//           { pageLanguage: "en", autoDisplay: false },
+//           "google_translate_element",
+//         );
+//       };
+//     const s = document.createElement("script");
+//     s.id = "google-translate-script";
+//     s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+//     s.async = true;
+//     document.body.appendChild(s);
+//   }, []);
+
+//   useRevealOnNavigate(contentRef);
+
+//   useEffect(() => {
+//     const loader = document.querySelector(".page-loader");
+//     if (loader) {
+//       const t = window.setTimeout(() => loader.classList.add("is-hidden"), 600);
+//       return () => window.clearTimeout(t);
+//     }
+//   }, []);
+
+//   return (
+//     <div ref={contentRef} className="min-h-screen overflow-hidden bg-background text-foreground">
+//       {/* Single mount point for Google Translate — do NOT put this in LanguageSwitcher */}
+//       <div id="google_translate_element" className="hidden" />
+//       <div className="page-loader fixed inset-0 z-[10000] grid place-items-center bg-background">
+//         <div className="loader-mark font-heading text-4xl font-extrabold text-gradient">
+//           EliWeb.in
+//         </div>
+//       </div>
+//       {children}
+//     </div>
+//   );
+// }
 export function RevealShell({ children }: { children: React.ReactNode }) {
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // Google Translate script init
   useEffect(() => {
     if (document.getElementById("google-translate-script")) return;
     (window as Window & { googleTranslateElementInit?: () => void }).googleTranslateElementInit =
@@ -833,8 +879,18 @@ export function RevealShell({ children }: { children: React.ReactNode }) {
     document.body.appendChild(s);
   }, []);
 
+  // ✅ ADD HERE — Remove _gt cache-busting param from URL after page loads
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("_gt")) {
+      url.searchParams.delete("_gt");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, []);
+
   useRevealOnNavigate(contentRef);
 
+  // Page loader hide
   useEffect(() => {
     const loader = document.querySelector(".page-loader");
     if (loader) {
@@ -845,7 +901,6 @@ export function RevealShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div ref={contentRef} className="min-h-screen overflow-hidden bg-background text-foreground">
-      {/* Single mount point for Google Translate — do NOT put this in LanguageSwitcher */}
       <div id="google_translate_element" className="hidden" />
       <div className="page-loader fixed inset-0 z-[10000] grid place-items-center bg-background">
         <div className="loader-mark font-heading text-4xl font-extrabold text-gradient">
@@ -921,38 +976,69 @@ const LANGUAGES: { code: string; flag: string; label: string }[] = [
   { code: "hi", flag: "in", label: "हिन्दी" },
 ];
 
+// function setGoogleTranslateLang(lang: string) {
+//   const host = window.location.hostname;
+
+//   // 1. Clear existing googtrans cookies first
+//   const clearCookie = (domain?: string) => {
+//     const domainPart = domain ? `;domain=${domain}` : "";
+//     document.cookie = `googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT${domainPart}`;
+//   };
+
+//   clearCookie();
+//   clearCookie(host);
+//   clearCookie(`.${host}`);
+
+//   // 2. If switching back to English, just clear and reload
+//   if (lang === "en") {
+//     window.location.reload();
+//     return;
+//   }
+
+//   // 3. Set fresh cookie on all domain variants
+//   const value = `/en/${lang}`;
+//   const setCookie = (domain?: string) => {
+//     const domainPart = domain ? `;domain=${domain}` : "";
+//     document.cookie = `googtrans=${value};path=/${domainPart}`;
+//   };
+
+//   setCookie();
+//   setCookie(host);
+//   setCookie(`.${host}`);
+
+//   // 4. Force hard reload so Google Translate picks up the new cookie
+//   window.location.reload();
+// }
+
 function setGoogleTranslateLang(lang: string) {
   const host = window.location.hostname;
 
-  // 1. Clear existing googtrans cookies first
-  const clearCookie = (domain?: string) => {
-    const domainPart = domain ? `;domain=${domain}` : "";
-    document.cookie = `googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT${domainPart}`;
-  };
+  // All possible domain variants to clear/set
+  const domains = ["", host, `.${host}`];
 
-  clearCookie();
-  clearCookie(host);
-  clearCookie(`.${host}`);
+  // 1. Nuke ALL googtrans cookies across every domain variant
+  domains.forEach((domain) => {
+    const d = domain ? `;domain=${domain}` : "";
+    document.cookie = `googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
+    document.cookie = `googtrans=;path=/en;expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
+  });
 
-  // 2. If switching back to English, just clear and reload
-  if (lang === "en") {
-    window.location.reload();
-    return;
-  }
+  // 2. Small delay to let cookie deletion settle, then set + navigate
+  setTimeout(() => {
+    if (lang !== "en") {
+      const value = `/en/${lang}`;
+      domains.forEach((domain) => {
+        const d = domain ? `;domain=${domain}` : "";
+        document.cookie = `googtrans=${value};path=/${d}`;
+      });
+    }
 
-  // 3. Set fresh cookie on all domain variants
-  const value = `/en/${lang}`;
-  const setCookie = (domain?: string) => {
-    const domainPart = domain ? `;domain=${domain}` : "";
-    document.cookie = `googtrans=${value};path=/${domainPart}`;
-  };
-
-  setCookie();
-  setCookie(host);
-  setCookie(`.${host}`);
-
-  // 4. Force hard reload so Google Translate picks up the new cookie
-  window.location.reload();
+    // 3. Navigate with cache-busting query param instead of reload()
+    //    This forces a fresh request even on CDN-cached live deployments
+    const url = new URL(window.location.href);
+    url.searchParams.set("_gt", Date.now().toString());
+    window.location.replace(url.toString());
+  }, 50);
 }
 
 function getCurrentLang(): string {
