@@ -10,10 +10,10 @@ const jsonLd = {
     {
       "@type": "Organization",
       "@id": "https://eliweb.in/#organization",
-      name: "EliWeb.in",
+      name: "ELIWEB",
       url: "https://eliweb.in",
       logo: "https://eliweb.in/favicon1.png",
-      email: "hello@eliweb.in",
+      email: "eliweb.in@gmail.com",
       telephone: "+917973851691",
       foundingDate: "2021",
       areaServed: ["IN", "US", "UK", "AE", "AU"],
@@ -32,7 +32,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://eliweb.in/#website",
       url: "https://eliweb.in",
-      name: "EliWeb.in",
+      name: "ELIWEB",
       publisher: { "@id": "https://eliweb.in/#organization" },
     },
   ],
@@ -42,11 +42,11 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://eliweb.in'),
   
   title: {
-    default: 'EliWeb.in — Web Development & Digital Marketing Agency India',
-    template: '%s | EliWeb.in'
+    default: 'ELIWEB — Web Development & Digital Marketing Agency India',
+    template: '%s | ELIWEB'
   },
   
-  description: 'EliWeb.in is your end-to-end digital partner — a leading web development and digital marketing agency in India. We build websites, edit videos, and grow brands.',
+  description: 'ELIWEB is your end-to-end digital partner — a leading web development and digital marketing agency in India. We build websites, edit videos, and grow brands.',
   
   keywords: [
     'web development India',
@@ -59,28 +59,28 @@ export const metadata: Metadata = {
     'EliWeb'
   ],
 
-  authors: [{ name: 'EliWeb.in', url: 'https://eliweb.in' }],
-  creator: 'EliWeb.in',
-  publisher: 'EliWeb.in',
+  authors: [{ name: 'ELIWEB', url: 'https://eliweb.in' }],
+  creator: 'ELIWEB',
+  publisher: 'ELIWEB',
 
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: 'https://eliweb.in',
-    siteName: 'EliWeb.in',
-    title: 'EliWeb.in — Web Development & Digital Marketing Agency India',
+    siteName: 'ELIWEB',
+    title: 'ELIWEB — Web Development & Digital Marketing Agency India',
     description: 'We build websites, edit videos, and grow brands.',
     images: [{
       url: '/og-image.jpg',
       width: 1200,
       height: 630,
-      alt: 'EliWeb.in — Digital Agency India'
+      alt: 'ELIWEB — Digital Agency India'
     }]
   },
 
   twitter: {
     card: 'summary_large_image',
-    title: 'EliWeb.in — Web Development & Digital Marketing',
+    title: 'ELIWEB — Web Development & Digital Marketing',
     description: 'We build websites, edit videos, and grow brands.',
     creator: '@eliwebin',
     images: ['/og-image.jpg']
