@@ -26,6 +26,8 @@ const navItems = [
   { label: "Portfolio", href: "/portfolio" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
+  {label: "Blog", href: "/blog" },
+  
 ] as const;
 
 export function BrandMark({ className }: { className?: string }) {

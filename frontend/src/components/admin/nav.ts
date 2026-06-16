@@ -1,6 +1,7 @@
 import {
   BarChart3,
   Briefcase,
+   BookOpen, 
   FileText,
   Footprints,
   HelpCircle,
@@ -89,6 +90,17 @@ export const adminNavSections: NavSection[] = [
         href: "/admin/case-studies",
         icon: Briefcase,
         description: "Detailed case studies on the portfolio page",
+      },
+    ],
+  },
+  {
+    label: "Content",
+    items: [
+      {
+        title: "Blog",
+        href: "/admin/blog",
+        icon: BookOpen,
+        description: "Write and manage blog posts published on the site",
       },
     ],
   },

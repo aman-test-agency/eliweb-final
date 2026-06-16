@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.blogPost.deleteMany(); 
   await prisma.contactSubmission.deleteMany();
   await prisma.enquirySubmission.deleteMany();
   await prisma.footerLink.deleteMany();
@@ -483,6 +484,128 @@ async function main() {
       },
     ],
   });
+  // ─── Blog Posts ───────────────────────────────────────────
+  const blogPosts = [
+    {
+      title: 'Why Your Business Needs a Custom Website in 2024',
+      slug: 'why-your-business-needs-a-custom-website-2024',
+      excerpt: 'Template sites hold you back. A custom-built website converts better, loads faster, and scales with you.',
+      content: `## The problem with templates\n\nPagebuilders come with hidden costs: you inherit their performance bottlenecks, design limitations, and pricing models.\n\n## What a custom site gives you\n\nEvery line of code serves your users and goals. Core Web Vitals scores climb. Bounce rates fall.\n\n## The ROI case\n\nA one-second improvement in load time increases conversions by up to 7%. The upfront investment pays back quickly.\n\n## How to get started\n\nStart with a discovery workshop. Understand your users, map conversion goals, and audit your current site's weaknesses.`,
+      coverImageUrl: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1200&q=80',
+      author: 'EliWeb Team',
+      authorAvatar: 'https://i.pravatar.cc/150?img=12',
+      category: 'Web Strategy',
+      tags: ['custom development', 'business growth', 'web performance'],
+      status: 'published',
+      featured: true,
+      readTime: 6,
+      views: 1842,
+      metaTitle: 'Why Your Business Needs a Custom Website in 2024 | EliWeb',
+      metaDesc: 'Discover why a custom-built website outperforms templates in speed, conversions, and long-term ROI.',
+      publishedAt: new Date('2024-02-14T09:00:00Z'),
+    },
+    {
+      title: 'Next.js vs Remix: Which Framework Should You Choose?',
+      slug: 'nextjs-vs-remix-which-framework-2024',
+      excerpt: 'Both frameworks are excellent — but they make different trade-offs. Here is how we think about the decision.',
+      content: `## Two philosophies\n\nNext.js has the larger ecosystem and deeper Vercel integration. Its App Router brings React Server Components to the mainstream.\n\n## Remix strengths\n\nRemix is designed around web fundamentals — forms, HTTP, progressive enhancement. It shines on data-heavy apps with lots of user interaction.\n\n## Our rule of thumb\n\nMarketing sites and e-commerce: Next.js. Data-driven dashboards and complex forms: Remix.`,
+      coverImageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80',
+      author: 'EliWeb Team',
+      authorAvatar: 'https://i.pravatar.cc/150?img=33',
+      category: 'Development',
+      tags: ['Next.js', 'Remix', 'React', 'framework comparison'],
+      status: 'published',
+      featured: true,
+      readTime: 8,
+      views: 3210,
+      metaTitle: 'Next.js vs Remix: Which Framework to Choose | EliWeb',
+      metaDesc: 'A practical comparison of Next.js and Remix to help you pick the right React framework for your next project.',
+      publishedAt: new Date('2024-03-05T10:00:00Z'),
+    },
+    {
+      title: 'Core Web Vitals: The Complete Guide for Developers',
+      slug: 'core-web-vitals-complete-guide-2024',
+      excerpt: 'LCP, CLS, and INP explained clearly — plus the techniques we use on every project to hit green scores.',
+      content: `## Why Core Web Vitals matter\n\nGoogle's page experience signals directly influence rankings. A site that scores well is genuinely pleasant to use.\n\n## The three metrics\n\n**LCP** — how quickly main content loads. Target: under 2.5s.\n**CLS** — visual stability. Target: under 0.1.\n**INP** — responsiveness to input. Target: under 200ms.\n\n## The fixes that move the needle\n\n- Use next/image for automatic optimisation\n- Preload the LCP element\n- Defer non-critical JavaScript\n- Use content-visibility: auto on below-the-fold sections`,
+      coverImageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
+      author: 'EliWeb Team',
+      authorAvatar: 'https://i.pravatar.cc/150?img=47',
+      category: 'Performance',
+      tags: ['Core Web Vitals', 'performance', 'SEO', 'LCP', 'CLS', 'INP'],
+      status: 'published',
+      featured: false,
+      readTime: 10,
+      views: 5670,
+      metaTitle: 'Core Web Vitals 2024: Complete Developer Guide | EliWeb',
+      metaDesc: 'Master LCP, CLS, and INP with our complete guide. Techniques we use to hit green scores on every project.',
+      publishedAt: new Date('2024-03-22T08:00:00Z'),
+    },
+    {
+      title: 'Designing for Accessibility: More Than a Checkbox',
+      slug: 'designing-for-accessibility-more-than-a-checkbox',
+      excerpt: 'Accessibility done right improves the experience for every user — not just those with disabilities.',
+      content: `## The mindset shift\n\nAccessibility is too often a compliance exercise bolted on at the end. We treat it as a design constraint from the first wireframe.\n\n## Practical patterns we use\n\n- Semantic HTML first — gives keyboard navigation and screen reader support for free\n- Focus indicators styled consistently with the brand\n- Colour contrast ratios checked at every breakpoint\n- Alt text that describes the function of an image\n- Testing with VoiceOver, NVDA, and keyboard-only navigation before every release\n\n## The business case\n\nRoughly 1 in 5 people live with a disability. An inaccessible site turns them away and exposes you to legal risk.`,
+      coverImageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&q=80',
+      author: 'EliWeb Team',
+      authorAvatar: 'https://i.pravatar.cc/150?img=12',
+      category: 'Design',
+      tags: ['accessibility', 'WCAG', 'inclusive design', 'UX'],
+      status: 'published',
+      featured: false,
+      readTime: 7,
+      views: 2390,
+      metaTitle: 'Designing for Accessibility: A Practical Guide | EliWeb',
+      metaDesc: 'Build accessible websites that work for everyone — and why it matters for your business, SEO, and users.',
+      publishedAt: new Date('2024-04-10T09:30:00Z'),
+    },
+    {
+      title: 'How We Structure Large-Scale React Projects',
+      slug: 'how-we-structure-large-scale-react-projects',
+      excerpt: "After shipping dozens of React apps, we've settled on a folder structure that keeps codebases maintainable as they grow.",
+      content: `## The problem with "just start coding"\n\nSmall React projects are forgiving. At a hundred components, a flat folder becomes a maze.\n\n## Feature-based organisation\n\n\`\`\`\nsrc/\n  features/\n    auth/\n      components/\n      hooks/\n      api.ts\n      index.ts\n    dashboard/\n  shared/\n    components/\n    hooks/\n    utils/\n\`\`\`\n\n## Other conventions we follow\n\n- Co-locate tests with the code they test\n- Custom hooks over bloated components (>150 lines is a signal)\n- Absolute imports via tsconfig paths: \`@/features/auth\``,
+      coverImageUrl: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80',
+      author: 'EliWeb Team',
+      authorAvatar: 'https://i.pravatar.cc/150?img=33',
+      category: 'Development',
+      tags: ['React', 'project structure', 'best practices', 'TypeScript'],
+      status: 'published',
+      featured: false,
+      readTime: 9,
+      views: 4120,
+      metaTitle: 'How to Structure Large-Scale React Projects | EliWeb',
+      metaDesc: 'Our battle-tested folder structure and conventions for keeping React codebases maintainable as they grow.',
+      publishedAt: new Date('2024-05-01T08:00:00Z'),
+    },
+    {
+      title: 'The Hidden Costs of Slow Websites',
+      slug: 'hidden-costs-of-slow-websites',
+      excerpt: 'Every second of load time costs you users, revenue, and ranking. We break down the numbers and show you the highest-impact fixes.',
+      content: `## Speed is a business problem\n\nThe impact of a slow site is concrete and measurable.\n\n## What the data says\n\n- A 1-second delay reduces conversions by 7%\n- 53% of mobile users abandon sites that take over 3 seconds to load\n- Google's algorithm incorporates Core Web Vitals\n\n## Where the time goes\n\n1. Unoptimised images — convert to WebP/AVIF, lazy-load below the fold\n2. Too much JavaScript — code-split and defer non-critical scripts\n3. No CDN — serving from a single origin adds latency for distant users\n4. Render-blocking resources in the \`<head>\`\n5. Slow hosting with poor TTFB\n\n## The 80/20\n\nFixing images and bundle size solves 80% of performance problems. Start there.`,
+      coverImageUrl: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1200&q=80',
+      author: 'EliWeb Team',
+      authorAvatar: 'https://i.pravatar.cc/150?img=47',
+      category: 'Performance',
+      tags: ['web performance', 'page speed', 'conversion rate', 'business impact'],
+      status: 'draft',
+      featured: false,
+      readTime: 6,
+      views: 0,
+      metaTitle: 'The Hidden Costs of Slow Websites | EliWeb',
+      metaDesc: 'Slow websites cost you users, sales, and rankings. Learn the highest-impact fixes with real data behind them.',
+      publishedAt: null,
+    },
+  ]
+
+  for (const post of blogPosts) {
+    await prisma.blogPost.upsert({
+      where: { slug: post.slug },
+      update: post,
+      create: post,
+    })
+  }
+  // ─────────────────────────────────────────────────────────
+
+  console.log("Seed completed successfully.");
 
   console.log("Seed completed successfully.");
 }

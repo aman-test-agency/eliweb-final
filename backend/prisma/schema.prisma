@@ -146,3 +146,26 @@ model EnquirySubmission {
   createdAt DateTime @default(now())
   read      Boolean  @default(false)
 }
+
+
+model BlogPost {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  excerpt       String    @db.Text
+  content       String    @db.Text
+  coverImageUrl String
+  author        String    @default("EliWeb Team")
+  authorAvatar  String    @default("")
+  category      String
+  tags          String[]
+  status        String    @default("draft")
+  featured      Boolean   @default(false)
+  readTime      Int       @default(5)
+  views         Int       @default(0)
+  metaTitle     String    @default("")
+  metaDesc      String    @db.Text @default("")
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}

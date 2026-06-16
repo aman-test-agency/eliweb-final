@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       return json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const token = await signToken({ sub: user.id, email: user.email });
+    const token = await signToken({ sub: user.id, email: user.email, role: "admin" });
     const response = NextResponse.json({ success: true, token });
 
     response.cookies.set("admin-token", token, {
