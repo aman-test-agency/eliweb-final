@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+const API = process.env.NEXT_PUBLIC_API_URL;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: "https://eliweb.in",
       lastModified: new Date(),
@@ -38,5 +41,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.6,
     },
+    {
+      url: "https://eliweb.in/blog",
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
   ];
+
+  // Fetch all published blog posts
+  let blogPages: MetadataRoute.Sitemap = [];
+  try {
+    const res  = await fetch(`${API}/api/blog?limit=1000&page=1`, { cache: "no-store" });
+    const json = await res.json();
+    if (json.success && json.data.posts) {
+      blogPages = json.data.posts.map((post: any) => ({
+        url:             `https://eliweb.in/blog/${post.slug}`,
+        lastModified:    new Date(post.updatedAt),
+        changeFrequency: "weekly" as const,
+        priority:        0.8,
+      }));
+    }
+  } catch (error) {
+    console.error("Sitemap: failed to fetch blog posts", error);
+  }
+
+  return [...staticPages, ...blogPages];
 }
