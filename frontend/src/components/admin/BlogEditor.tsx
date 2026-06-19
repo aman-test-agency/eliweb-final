@@ -7,6 +7,7 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import Highlight from "@tiptap/extension-highlight";
+import { Markdown } from "tiptap-markdown";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -39,10 +40,13 @@ export default function BlogEditor({ postId }: { postId?: string }) {
       Image,
       Placeholder.configure({ placeholder: "Start writing your article…" }),
       Highlight,
+      Markdown,
     ],
     content: "",
     onUpdate: ({ editor }) => {
-      triggerAutoSave(editor.getHTML());
+      // Captures clean markdown string instead of HTML
+     const markdownContent = (editor.storage as any).markdown.getMarkdown();
+      triggerAutoSave(markdownContent);
     },
   });
 
@@ -95,7 +99,8 @@ export default function BlogEditor({ postId }: { postId?: string }) {
     if (!validate()) return;
     setSaving(true);
     const slug    = form.slug || slugify(form.title);
-    const content = editor?.getHTML() ?? "";
+    // Extracted markdown format for final submissions
+   const content = (editor as any)?.storage?.markdown?.getMarkdown() ?? "";
     const body    = { ...form, slug, content, status: publishStatus };
 
     try {
