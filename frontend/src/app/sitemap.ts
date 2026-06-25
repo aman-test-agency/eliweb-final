@@ -56,7 +56,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (API) {
     try {
       const res  = await fetch(`${API}/api/blog?limit=1000&page=1`, { 
-        cache: "no-store",
         signal: AbortSignal.timeout(15000), // 15s timeout
       });
       const json = await res.json();

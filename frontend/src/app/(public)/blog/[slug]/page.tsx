@@ -36,6 +36,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
+function isHtmlContent(content: string): boolean {
+  const trimmed = content.trim();
+  return trimmed.startsWith("<") && /<[a-z0-9]+[^>]*>/i.test(trimmed);
+}
+
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   // Fetch primary post data
   const res  = await fetch(`${API}/api/blog/${params.slug}`, { cache: "no-store" });
@@ -118,9 +123,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               prose-img:rounded-[0.9rem] prose-img:shadow-md">
               
               {post.content && post.content.trim() !== "" ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {post.content}
-                </ReactMarkdown>
+                isHtmlContent(post.content) ? (
+                  <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                ) : (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {post.content}
+                  </ReactMarkdown>
+                )
               ) : (
                 <div className="rounded-[0.9rem] border border-dashed border-gray-200 dark:border-gray-800 p-8 text-center bg-gray-50 dark:bg-gray-900/30">
                   <p className="text-gray-400 dark:text-gray-500 italic my-0">
