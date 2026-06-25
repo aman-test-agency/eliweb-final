@@ -1015,32 +1015,35 @@ const LANGUAGES: { code: string; flag: string; label: string }[] = [
 function setGoogleTranslateLang(lang: string) {
   const host = window.location.hostname;
 
-  // All possible domain variants to clear/set
+  // All possible domain variants Google Translate may set cookies on
   const domains = ["", host, `.${host}`];
+  const paths = ["/", "/en", window.location.pathname];
 
-  // 1. Nuke ALL googtrans cookies across every domain variant
+  // 1. Nuke ALL googtrans cookies across every domain + path combination
+  //    Google Translate sets cookies on unexpected domain/path combos,
+  //    so we must be exhaustive to avoid stale cookies on the 2nd switch
   domains.forEach((domain) => {
     const d = domain ? `;domain=${domain}` : "";
-    document.cookie = `googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
-    document.cookie = `googtrans=;path=/en;expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
+    paths.forEach((p) => {
+      document.cookie = `googtrans=;path=${p};expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
+    });
   });
 
-  // 2. Small delay to let cookie deletion settle, then set + navigate
-  setTimeout(() => {
-    if (lang !== "en") {
-      const value = `/en/${lang}`;
-      domains.forEach((domain) => {
-        const d = domain ? `;domain=${domain}` : "";
-        document.cookie = `googtrans=${value};path=/${d}`;
-      });
-    }
+  // 2. Set fresh cookie only if not switching to English
+  if (lang !== "en") {
+    const value = `/en/${lang}`;
+    // Set on root path with all domain variants
+    domains.forEach((domain) => {
+      const d = domain ? `;domain=${domain}` : "";
+      document.cookie = `googtrans=${value};path=/${d}`;
+    });
+  }
 
-    // 3. Navigate with cache-busting query param instead of reload()
-    //    This forces a fresh request even on CDN-cached live deployments
-    const url = new URL(window.location.href);
-    url.searchParams.set("_gt", Date.now().toString());
-    window.location.replace(url.toString());
-  }, 50);
+  // 3. Navigate with cache-busting param — use href assignment for a
+  //    full fresh load (more reliable than replace() on Vercel/CDN)
+  const url = new URL(window.location.href);
+  url.searchParams.set("_gt", Date.now().toString());
+  window.location.href = url.toString();
 }
 
 function getCurrentLang(): string {
