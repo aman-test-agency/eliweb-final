@@ -590,7 +590,7 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        <LanguageSwitcher />
+        {/* <LanguageSwitcher /> */}
       </header>
 
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-center px-3 pt-3 lg:hidden animate-[reveal-nav_500ms_ease_both]">
@@ -601,7 +601,7 @@ export function SiteHeader() {
           </Link>
           <span className="font-glow text-base text-gradient-teal">EliWeb.in</span>
           <div className="flex items-center gap-1">
-            <LanguageSwitcher />
+            {/* <LanguageSwitcher /> */}
             <button
               aria-label="Open menu"
               onClick={() => setOpen(true)}
@@ -650,7 +650,7 @@ export function SiteHeader() {
         </nav>
         <div className="mt-8 grid gap-3">
           <div className="flex justify-center">
-            <LanguageSwitcher />
+            {/* <LanguageSwitcher /> */}
           </div>
           <button
             onClick={toggleTheme}
