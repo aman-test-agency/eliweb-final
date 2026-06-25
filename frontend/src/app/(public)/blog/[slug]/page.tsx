@@ -17,6 +17,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     return {
       title:       post.metaTitle || post.title,
       description: post.metaDesc  || post.excerpt,
+      alternates: {
+        canonical: `https://eliweb.in/blog/${params.slug}`,
+      },
       openGraph: {
         title:       post.metaTitle || post.title,
         description: post.metaDesc  || post.excerpt,
@@ -24,7 +27,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       },
     };
   } catch {
-    return { title: "Blog" };
+    return { 
+      title: "Blog",
+      alternates: {
+        canonical: `https://eliweb.in/blog/${params.slug}`,
+      },
+    };
   }
 }
 

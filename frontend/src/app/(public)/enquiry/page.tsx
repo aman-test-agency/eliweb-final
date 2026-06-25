@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Enquire Now",
   description:
     "Tell us about your project and we'll get back to you within 24 hours.",
+  alternates: {
+    canonical: "https://eliweb.in/enquiry",
+  },
   openGraph: {
     title: "Enquire Now | EliWeb.in",
     url: "https://eliweb.in/enquiry",

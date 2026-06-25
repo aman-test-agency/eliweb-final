@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Contact Us",
   description:
     "Get in touch with EliWeb.in. Book a free call, send a message, or chat on WhatsApp.",
+  alternates: {
+    canonical: "https://eliweb.in/contact",
+  },
 };
 
 export default async function ContactPage() {

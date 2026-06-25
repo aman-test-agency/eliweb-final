@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Our Services",
   description:
     "Web development, app development, SEO, digital marketing, video editing and more — end-to-end digital services by EliWeb.in.",
+  alternates: {
+    canonical: "https://eliweb.in/services",
+  },
   openGraph: {
     title: "Services | EliWeb.in",
     url: "https://eliweb.in/services",

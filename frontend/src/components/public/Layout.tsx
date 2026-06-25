@@ -555,20 +555,24 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 hidden items-center justify-between gap-4 px-6 pt-5 lg:flex animate-[reveal-nav_500ms_ease_both]">
-        <Link
-          href="/"
-          aria-label="Home"
-          className="group flex shrink-0 items-center transition-all duration-200 hover:opacity-90"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={logoUrl}
-            alt="EliWeb logo"
-            className="size-12 object-contain transition-transform duration-200 group-hover:scale-110"
-          />
-        </Link>
+      <header className="fixed inset-x-0 top-0 z-50 hidden items-center justify-between px-6 pt-5 lg:flex animate-[reveal-nav_500ms_ease_both]">
+        {/* Left Column: Logo */}
+        <div className="flex-1 flex justify-start">
+          <Link
+            href="/"
+            aria-label="Home"
+            className="group flex shrink-0 items-center transition-all duration-200 hover:opacity-90"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoUrl}
+              alt="EliWeb logo"
+              className="size-12 object-contain transition-transform duration-200 group-hover:scale-110"
+            />
+          </Link>
+        </div>
 
+        {/* Center Column: Navbar */}
         <div className="pill-navbar flex items-center gap-1 rounded-full border border-border/40 px-2 py-1.5 shadow-navbar">
           <nav className="flex items-center gap-0.5">
             {navItems.map((item) => (
@@ -590,7 +594,10 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        {/* <LanguageSwitcher /> */}
+        {/* Right Column: Spacer / Language Switcher */}
+        <div className="flex-1 flex justify-end">
+          {/* <LanguageSwitcher /> */}
+        </div>
       </header>
 
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-center px-3 pt-3 lg:hidden animate-[reveal-nav_500ms_ease_both]">

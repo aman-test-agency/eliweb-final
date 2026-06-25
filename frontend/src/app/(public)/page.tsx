@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HomePageContent } from "@/components/public/HomePageContent";
 import { PageError } from "@/components/public/PageError";
 import { apiGet } from "@/lib/api";
@@ -10,6 +11,12 @@ import type {
   TechTool,
   Testimonial,
 } from "@/lib/types";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://eliweb.in",
+  },
+};
 
 export default async function HomePage() {
   const [hero, services, stats, projects, testimonials, faqs, techTools] = await Promise.all([

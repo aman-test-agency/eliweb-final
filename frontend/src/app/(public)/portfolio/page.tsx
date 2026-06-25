@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Portfolio",
   description:
     "Browse our work — web projects, video productions, and brand campaigns delivered by EliWeb.in.",
+  alternates: {
+    canonical: "https://eliweb.in/portfolio",
+  },
 };
 
 export default async function PortfolioPage() {
