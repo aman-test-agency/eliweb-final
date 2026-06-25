@@ -863,8 +863,19 @@ function useRevealOnNavigate(rootRef: React.RefObject<HTMLElement | null>) {
 export function RevealShell({ children }: { children: React.ReactNode }) {
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Google Translate script init
+  // Google Translate init — sync cookie from localStorage BEFORE loading the
+  // GT script so it always reads the correct language, not a stale cookie.
   useEffect(() => {
+    const saved = localStorage.getItem("eliweb-lang");
+    clearAllGoogTransCookies();
+    if (saved && saved !== "en") {
+      const host = window.location.hostname;
+      const val = `/en/${saved}`;
+      document.cookie = `googtrans=${val};path=/`;
+      document.cookie = `googtrans=${val};path=/;domain=${host}`;
+      document.cookie = `googtrans=${val};path=/;domain=.${host}`;
+    }
+
     if (document.getElementById("google-translate-script")) return;
     (window as Window & { googleTranslateElementInit?: () => void }).googleTranslateElementInit =
       () => {
@@ -982,44 +993,45 @@ function clearAllGoogTransCookies() {
 }
 
 function setGoogleTranslateLang(lang: string) {
-  // Primary method: use Google Translate's own built-in <select> element.
-  // When the widget is loaded, it creates a hidden <select class="goog-te-combo">.
-  // Changing its value + dispatching "change" triggers GT's internal language switch,
-  // which handles cookies correctly and avoids the stale-cookie problem on live.
+  // Save preference — localStorage is the source of truth.
+  // On every page load, RevealShell syncs the cookie FROM localStorage
+  // BEFORE GT loads, so stale cookies from GT's own writes are never an issue.
+  localStorage.setItem("eliweb-lang", lang);
+
+  // Use GT's built-in <select class="goog-te-combo"> for in-session switches.
+  // This lets GT handle its own cookies internally — no manual cookie juggling.
   const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
 
-  if (combo) {
-    if (lang === "en") {
-      // To restore to English, clear cookies and do a clean reload
-      clearAllGoogTransCookies();
-      window.location.reload();
-      return;
-    }
-    combo.value = lang;
-    combo.dispatchEvent(new Event("change"));
+  if (lang === "en") {
+    // Restore to English: clear cookies + reload for a clean state
+    clearAllGoogTransCookies();
+    window.location.reload();
     return;
   }
 
-  // Fallback: cookie-based approach (only for the very first switch
-  // before Google Translate widget has loaded on the page)
-  clearAllGoogTransCookies();
-
-  if (lang !== "en") {
-    const host = window.location.hostname;
-    const value = `/en/${lang}`;
-    document.cookie = `googtrans=${value};path=/`;
-    document.cookie = `googtrans=${value};path=/;domain=${host}`;
-    document.cookie = `googtrans=${value};path=/;domain=.${host}`;
+  if (combo) {
+    combo.value = lang;
+    combo.dispatchEvent(new Event("change", { bubbles: true }));
+    return;
   }
 
+  // Fallback: cookie + reload (only when GT widget hasn't loaded yet)
+  clearAllGoogTransCookies();
+  const host = window.location.hostname;
+  const value = `/en/${lang}`;
+  document.cookie = `googtrans=${value};path=/`;
+  document.cookie = `googtrans=${value};path=/;domain=${host}`;
+  document.cookie = `googtrans=${value};path=/;domain=.${host}`;
   window.location.reload();
 }
 
 function getCurrentLang(): string {
-  // Read from Google Translate's own combo if available (most accurate)
+  // localStorage is the source of truth
+  const saved = localStorage.getItem("eliweb-lang");
+  if (saved) return saved;
+  // Fallback: read from GT combo or cookie
   const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
   if (combo && combo.value) return combo.value;
-  // Fallback: read from cookie
   const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);
   return match ? match[1] : "en";
 }
@@ -1029,21 +1041,20 @@ function LanguageSwitcher() {
   const [activeLang, setActiveLang] = useState("en");
 
   useEffect(() => {
-    // Delay reading to give Google Translate widget time to initialize
-    const t = window.setTimeout(() => setActiveLang(getCurrentLang()), 500);
-    return () => window.clearTimeout(t);
+    setActiveLang(getCurrentLang());
   }, []);
 
   const handleSelect = (lang: string) => {
     setOpen(false);
     if (lang === activeLang) return;
+    setActiveLang(lang);
     setGoogleTranslateLang(lang);
   };
 
   const active = LANGUAGES.find((l) => l.code === activeLang) ?? LANGUAGES[0];
 
   return (
-    <div className="relative">
+    <div className="relative notranslate" translate="no">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
