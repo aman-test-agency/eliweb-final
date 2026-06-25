@@ -881,15 +881,6 @@ export function RevealShell({ children }: { children: React.ReactNode }) {
     document.body.appendChild(s);
   }, []);
 
-  // ✅ ADD HERE — Remove _gt cache-busting param from URL after page loads
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    if (url.searchParams.has("_gt")) {
-      url.searchParams.delete("_gt");
-      window.history.replaceState({}, "", url.toString());
-    }
-  }, []);
-
   useRevealOnNavigate(contentRef);
 
   // Page loader hide
@@ -978,75 +969,57 @@ const LANGUAGES: { code: string; flag: string; label: string }[] = [
   { code: "hi", flag: "in", label: "हिन्दी" },
 ];
 
-// function setGoogleTranslateLang(lang: string) {
-//   const host = window.location.hostname;
-
-//   // 1. Clear existing googtrans cookies first
-//   const clearCookie = (domain?: string) => {
-//     const domainPart = domain ? `;domain=${domain}` : "";
-//     document.cookie = `googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT${domainPart}`;
-//   };
-
-//   clearCookie();
-//   clearCookie(host);
-//   clearCookie(`.${host}`);
-
-//   // 2. If switching back to English, just clear and reload
-//   if (lang === "en") {
-//     window.location.reload();
-//     return;
-//   }
-
-//   // 3. Set fresh cookie on all domain variants
-//   const value = `/en/${lang}`;
-//   const setCookie = (domain?: string) => {
-//     const domainPart = domain ? `;domain=${domain}` : "";
-//     document.cookie = `googtrans=${value};path=/${domainPart}`;
-//   };
-
-//   setCookie();
-//   setCookie(host);
-//   setCookie(`.${host}`);
-
-//   // 4. Force hard reload so Google Translate picks up the new cookie
-//   window.location.reload();
-// }
-
-function setGoogleTranslateLang(lang: string) {
+function clearAllGoogTransCookies() {
   const host = window.location.hostname;
-
-  // All possible domain variants Google Translate may set cookies on
   const domains = ["", host, `.${host}`];
   const paths = ["/", "/en", window.location.pathname];
-
-  // 1. Nuke ALL googtrans cookies across every domain + path combination
-  //    Google Translate sets cookies on unexpected domain/path combos,
-  //    so we must be exhaustive to avoid stale cookies on the 2nd switch
   domains.forEach((domain) => {
     const d = domain ? `;domain=${domain}` : "";
     paths.forEach((p) => {
       document.cookie = `googtrans=;path=${p};expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
     });
   });
+}
 
-  // 2. Set fresh cookie only if not switching to English
-  if (lang !== "en") {
-    const value = `/en/${lang}`;
-    // Set on root path with all domain variants
-    domains.forEach((domain) => {
-      const d = domain ? `;domain=${domain}` : "";
-      document.cookie = `googtrans=${value};path=/${d}`;
-    });
+function setGoogleTranslateLang(lang: string) {
+  // Primary method: use Google Translate's own built-in <select> element.
+  // When the widget is loaded, it creates a hidden <select class="goog-te-combo">.
+  // Changing its value + dispatching "change" triggers GT's internal language switch,
+  // which handles cookies correctly and avoids the stale-cookie problem on live.
+  const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+
+  if (combo) {
+    if (lang === "en") {
+      // To restore to English, clear cookies and do a clean reload
+      clearAllGoogTransCookies();
+      window.location.reload();
+      return;
+    }
+    combo.value = lang;
+    combo.dispatchEvent(new Event("change"));
+    return;
   }
 
-  // 3. Navigate with cache-busting param — use href assignment for a
-  //    full fresh load (more reliable than replace() on Vercel/CDN)
-  const url = new URL(window.location.href);
-  url.searchParams.set("_gt", Date.now().toString());
-  window.location.href = url.toString();
+  // Fallback: cookie-based approach (only for the very first switch
+  // before Google Translate widget has loaded on the page)
+  clearAllGoogTransCookies();
+
+  if (lang !== "en") {
+    const host = window.location.hostname;
+    const value = `/en/${lang}`;
+    document.cookie = `googtrans=${value};path=/`;
+    document.cookie = `googtrans=${value};path=/;domain=${host}`;
+    document.cookie = `googtrans=${value};path=/;domain=.${host}`;
+  }
+
+  window.location.reload();
 }
 
 function getCurrentLang(): string {
+  // Read from Google Translate's own combo if available (most accurate)
+  const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+  if (combo && combo.value) return combo.value;
+  // Fallback: read from cookie
   const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);
   return match ? match[1] : "en";
 }
@@ -1056,11 +1029,14 @@ function LanguageSwitcher() {
   const [activeLang, setActiveLang] = useState("en");
 
   useEffect(() => {
-    setActiveLang(getCurrentLang());
+    // Delay reading to give Google Translate widget time to initialize
+    const t = window.setTimeout(() => setActiveLang(getCurrentLang()), 500);
+    return () => window.clearTimeout(t);
   }, []);
 
   const handleSelect = (lang: string) => {
     setOpen(false);
+    if (lang === activeLang) return;
     setGoogleTranslateLang(lang);
   };
 
@@ -1104,4 +1080,4 @@ function LanguageSwitcher() {
       )}
     </div>
   );
-}
+}
